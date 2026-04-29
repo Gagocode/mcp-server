@@ -175,15 +175,30 @@ Content-Type: application/json
 ### `get_ip`
 Retorna os IPs locais da máquina.
 
+**Request:**
+```json
+{ "tool": "get_ip", "args": {} }
+```
+
 ---
 
 ### `get_hostname`
 Retorna o hostname, plataforma e arquitetura da máquina.
 
+**Request:**
+```json
+{ "tool": "get_hostname", "args": {} }
+```
+
 ---
 
 ### `list_files`
 Lista arquivos e diretórios de um caminho. Se `path` for omitido, usa o diretório atual do processo.
+
+**Request:**
+```json
+{ "tool": "list_files", "args": { "path": "/home/user" } }
+```
 
 ---
 
