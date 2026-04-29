@@ -55,20 +55,34 @@ POST /tool
 
 ---
 
-## O Registry
+## O Registry e Schemas
 
 ```js
 // Em tools.service.js
-const registry = {
-  get_ip:       getIp,
-  get_hostname: getHostname,
-  list_files:   listFiles,
-  create_file:  createFile,
-  ping_host:    pingHost,
+const schemas = {
+  create_file: {
+    name: 'create_file',
+    description: '...',
+    parameters: {
+      type: 'object',
+      properties: { ... },
+      required: ['filename']
+    }
+  },
+  // ... outras tools
 };
 ```
 
-**Conceito central do projeto:** o registry demonstra como uma IA pode selecionar e executar tools dinamicamente a partir de um nome string. Isso é análogo ao `tool_use` da Anthropic API ou ao `function_calling` da OpenAI.
+**Conceito de Tool Calling:** O endpoint `GET /tools` agora exporta schemas completos no padrão JSON Schema. Isso permite que uma IA entenda não apenas *o que* a ferramenta faz, mas *quais parâmetros* ela deve enviar, tornando a integração muito mais robusta.
+
+---
+
+## Segurança e Sandbox
+
+Para manter o projeto seguro em ambiente acadêmico, aplicamos:
+
+1.  **Sandbox de Arquivos:** A tool `create_file` está restrita à pasta `/files` na raiz do projeto. O uso de `path.basename()` impede que a IA ou o usuário tentem criar arquivos em diretórios protegidos do sistema operacional (ex: `../../etc/passwd`).
+2.  **Sanitização de Comandos:** A tool `ping_host` valida o input `host` com uma regex (`/^[a-zA-Z0-9.-]+$/`). Isso impede ataques de **Command Injection**, onde comandos arbitrários poderiam ser executados concatenados ao ping (ex: `8.8.8.8 && rm -rf /`).
 
 ---
 

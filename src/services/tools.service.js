@@ -14,21 +14,78 @@ const registry = {
   ping_host:    pingHost,
 };
 
-// Descrições das tools para o endpoint informativo
-const descriptions = {
-  get_ip:       'Retorna os IPs locais da máquina.',
-  get_hostname: 'Retorna o hostname, plataforma e arquitetura da máquina.',
-  list_files:   'Lista arquivos e diretórios de um caminho.',
-  create_file:  'Cria um arquivo no diretório de trabalho do servidor.',
-  ping_host:    'Faz ping em um host ou IP e retorna o resultado.',
+// Schemas das tools: define o que a tool faz e quais parâmetros ela aceita
+// Esse formato (JSON Schema) é o que as IAs utilizam para entender como chamar ferramentas
+const schemas = {
+  get_ip: {
+    name: 'get_ip',
+    description: 'Retorna os IPs locais da máquina.',
+    parameters: {
+      type: 'object',
+      properties: {},
+      required: []
+    }
+  },
+  get_hostname: {
+    name: 'get_hostname',
+    description: 'Retorna o hostname, plataforma e arquitetura da máquina.',
+    parameters: {
+      type: 'object',
+      properties: {},
+      required: []
+    }
+  },
+  list_files: {
+    name: 'list_files',
+    description: 'Lista arquivos e diretórios de um caminho.',
+    parameters: {
+      type: 'object',
+      properties: {
+        path: {
+          type: 'string',
+          description: 'Caminho do diretório a ser listado (opcional, padrão é o diretório atual)'
+        }
+      },
+      required: []
+    }
+  },
+  create_file: {
+    name: 'create_file',
+    description: 'Cria um arquivo dentro da pasta /files.',
+    parameters: {
+      type: 'object',
+      properties: {
+        filename: {
+          type: 'string',
+          description: 'Nome do arquivo a ser criado'
+        },
+        content: {
+          type: 'string',
+          description: 'Conteúdo do arquivo'
+        }
+      },
+      required: ['filename']
+    }
+  },
+  ping_host: {
+    name: 'ping_host',
+    description: 'Faz ping em um host ou IP e retorna o resultado.',
+    parameters: {
+      type: 'object',
+      properties: {
+        host: {
+          type: 'string',
+          description: 'Endereço IP ou hostname para pingar'
+        }
+      },
+      required: ['host']
+    }
+  }
 };
 
-// Retorna a lista de todas as ferramentas disponíveis com descrição
+// Retorna a lista de todas as ferramentas disponíveis com seus schemas
 const getAvailableTools = () => {
-  return Object.keys(registry).map(name => ({
-    name,
-    description: descriptions[name] || 'Sem descrição disponível'
-  }));
+  return Object.keys(registry).map(name => schemas[name]);
 };
 
 // Executa a tool solicitada com os argumentos recebidos

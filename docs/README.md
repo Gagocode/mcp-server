@@ -123,7 +123,7 @@ Existem dois endpoints principais: um para listar ferramentas e outro para execu
 
 ### Listar ferramentas disponíveis
 
-Retorna todas as ferramentas registradas no servidor com suas descrições.
+Retorna todas as ferramentas registradas no servidor com seus **schemas completos** (descrição e parâmetros). Este formato facilita a integração com IAs (Tool Calling).
 
 ```
 GET http://localhost:3000/tools
@@ -133,12 +133,20 @@ GET http://localhost:3000/tools
 ```json
 {
   "success": true,
-  "result": {
-    "tools": [
-      { "name": "get_ip", "description": "..." },
-      { "name": "get_hostname", "description": "..." }
-    ]
-  }
+  "result": [
+    {
+      "name": "create_file",
+      "description": "Cria um arquivo dentro da pasta /files.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "filename": { "type": "string", "description": "..." },
+          "content": { "type": "string", "description": "..." }
+        },
+        "required": ["filename"]
+      }
+    }
+  ]
 }
 ```
 
@@ -160,24 +168,6 @@ Content-Type: application/json
 }
 ```
 
-#### Formato da resposta — sucesso
-
-```json
-{
-  "success": true,
-  "result": { ... }
-}
-```
-
-#### Formato da resposta — erro
-
-```json
-{
-  "success": false,
-  "error": "Mensagem de erro"
-}
-```
-
 ---
 
 ## Tools disponíveis
@@ -185,76 +175,20 @@ Content-Type: application/json
 ### `get_ip`
 Retorna os IPs locais da máquina.
 
-**Request:**
-```json
-{ "tool": "get_ip", "args": {} }
-```
-
-**Response:**
-```json
-{
-  "success": true,
-  "result": {
-    "ips": [
-      { "interface": "eth0", "ip": "192.168.1.100" }
-    ]
-  }
-}
-```
-
 ---
 
 ### `get_hostname`
 Retorna o hostname, plataforma e arquitetura da máquina.
 
-**Request:**
-```json
-{ "tool": "get_hostname", "args": {} }
-```
-
-**Response:**
-```json
-{
-  "success": true,
-  "result": {
-    "hostname": "meu-servidor",
-    "platform": "linux",
-    "arch": "x64"
-  }
-}
-```
-
 ---
 
 ### `list_files`
-Lista arquivos e diretórios de um caminho.
-
-**Request:**
-```json
-{ "tool": "list_files", "args": { "path": "/home/user" } }
-```
-
-Se `path` for omitido, usa o diretório atual do processo.
-
-**Response:**
-```json
-{
-  "success": true,
-  "result": {
-    "path": "/home/user",
-    "total": 3,
-    "files": [
-      { "name": "documentos", "type": "directory" },
-      { "name": "notas.txt", "type": "file" }
-    ]
-  }
-}
-```
+Lista arquivos e diretórios de um caminho. Se `path` for omitido, usa o diretório atual do processo.
 
 ---
 
 ### `create_file`
-Cria um arquivo no diretório de trabalho do servidor.
+Cria um arquivo **dentro da pasta `/files`** na raiz do servidor. Essa pasta funciona como um sandbox para organizar os arquivos gerados.
 
 **Request:**
 ```json
@@ -267,40 +201,15 @@ Cria um arquivo no diretório de trabalho do servidor.
 }
 ```
 
-**Response:**
-```json
-{
-  "success": true,
-  "result": {
-    "created": true,
-    "filename": "teste.txt",
-    "path": "/home/user/mcp-server/teste.txt",
-    "size": 9
-  }
-}
-```
-
 ---
 
 ### `ping_host`
 Faz ping em um host ou IP e retorna o resultado.
+**Segurança:** Apenas caracteres alfanuméricos, pontos e hifens são permitidos no host para evitar injeção de comandos.
 
 **Request:**
 ```json
 { "tool": "ping_host", "args": { "host": "8.8.8.8" } }
-```
-
-**Response:**
-```json
-{
-  "success": true,
-  "result": {
-    "host": "8.8.8.8",
-    "reachable": true,
-    "summary": "rtt min/avg/max/mdev = 10.1/11.2/12.3/1.1 ms",
-    "output": "..."
-  }
-}
 ```
 
 ---

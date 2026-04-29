@@ -8,6 +8,13 @@ const pingHost = ({ host } = {}) => {
       return reject(new Error('O campo "host" é obrigatório'));
     }
 
+    // Sanitização: permite apenas letras, números, pontos e hifens
+    // Isso impede ataques de Command Injection (ex: 8.8.8.8 && rm -rf /)
+    const hostRegex = /^[a-zA-Z0-9.-]+$/;
+    if (!hostRegex.test(host)) {
+      return reject(new Error('Host inválido. Utilize apenas letras, números, pontos ou hifens.'));
+    }
+
     // Detecta o SO para usar a flag correta
     const isWindows = process.platform === 'win32';
     const countFlag = isWindows ? `-n 3` : `-c 3`;
