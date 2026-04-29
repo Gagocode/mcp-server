@@ -14,6 +14,23 @@ const registry = {
   ping_host:    pingHost,
 };
 
+// Descrições das tools para o endpoint informativo
+const descriptions = {
+  get_ip:       'Retorna os IPs locais da máquina.',
+  get_hostname: 'Retorna o hostname, plataforma e arquitetura da máquina.',
+  list_files:   'Lista arquivos e diretórios de um caminho.',
+  create_file:  'Cria um arquivo no diretório de trabalho do servidor.',
+  ping_host:    'Faz ping em um host ou IP e retorna o resultado.',
+};
+
+// Retorna a lista de todas as ferramentas disponíveis com descrição
+const getAvailableTools = () => {
+  return Object.keys(registry).map(name => ({
+    name,
+    description: descriptions[name] || 'Sem descrição disponível'
+  }));
+};
+
 // Executa a tool solicitada com os argumentos recebidos
 const run = async (toolName, args) => {
   const tool = registry[toolName];
@@ -25,4 +42,4 @@ const run = async (toolName, args) => {
   return await tool(args);
 };
 
-module.exports = { run, registry };
+module.exports = { run, registry, getAvailableTools };

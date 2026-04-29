@@ -119,14 +119,37 @@ Resposta esperada:
 
 ## Como usar — API
 
-Todas as ferramentas são acessadas pelo mesmo endpoint:
+Existem dois endpoints principais: um para listar ferramentas e outro para executá-las.
+
+### Listar ferramentas disponíveis
+
+Retorna todas as ferramentas registradas no servidor com suas descrições.
+
+```
+GET http://localhost:3000/tools
+```
+
+**Resposta:**
+```json
+{
+  "success": true,
+  "result": {
+    "tools": [
+      { "name": "get_ip", "description": "..." },
+      { "name": "get_hostname", "description": "..." }
+    ]
+  }
+}
+```
+
+### Executar uma ferramenta
 
 ```
 POST http://localhost:3000/tool
 Content-Type: application/json
 ```
 
-### Formato da requisição
+#### Formato da requisição
 
 ```json
 {
@@ -137,7 +160,7 @@ Content-Type: application/json
 }
 ```
 
-### Formato da resposta — sucesso
+#### Formato da resposta — sucesso
 
 ```json
 {
@@ -146,7 +169,7 @@ Content-Type: application/json
 }
 ```
 
-### Formato da resposta — erro
+#### Formato da resposta — erro
 
 ```json
 {
@@ -329,7 +352,6 @@ curl -X POST http://localhost:3000/tool \
 
 - Adicionar autenticação via API Key
 - Implementar log de chamadas (quem chamou qual tool e quando)
-- Criar endpoint `GET /tools` para listar tools disponíveis com descrição
 - Adicionar suporte a WebSocket para resultados em streaming
 - Integrar com modelos de IA locais (Ollama, LM Studio)
 - Adicionar novas tools: leitura de CPU/memória, execução de scripts, etc.

@@ -1,5 +1,6 @@
 const express = require('express');
 const toolRoutes = require('./routes/tools.routes');
+const toolsController = require('./controllers/tools.controller');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -11,6 +12,9 @@ app.use(express.json());
 app.get('/health', (req, res) => {
   res.json({ status: 'ok', message: 'MCP Server rodando' });
 });
+
+// Endpoint para listar ferramentas disponíveis
+app.get('/tools', toolsController.listTools);
 
 // Todas as rotas de tools ficam sob /tool
 app.use('/tool', toolRoutes);

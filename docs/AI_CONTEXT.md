@@ -17,8 +17,19 @@ O projeto é **propositalmente simples** — não use padrões enterprise aqui.
 
 ---
 
-## Fluxo interno de uma requisição
+## Fluxos internos
 
+### Listagem de ferramentas
+```
+GET /tools
+  → server.js             (define a rota)
+  → tools.controller.js   (chama o serviço de listagem)
+  → tools.service.js      (retorna tools e descrições do registry)
+  → response.js           (formata a resposta)
+  → JSON ao cliente
+```
+
+### Execução de uma ferramenta
 ```
 POST /tool
   → tools.routes.js       (define a rota)

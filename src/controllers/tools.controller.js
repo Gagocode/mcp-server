@@ -18,4 +18,10 @@ const executeTool = async (req, res) => {
   }
 };
 
-module.exports = { executeTool };
+// Retorna a lista de todas as ferramentas disponíveis
+const listTools = (req, res) => {
+  const tools = toolsService.getAvailableTools();
+  return res.json(success({ tools }));
+};
+
+module.exports = { executeTool, listTools };
