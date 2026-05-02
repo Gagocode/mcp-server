@@ -3,7 +3,8 @@ const toolRoutes = require('./routes/tools.routes');
 const toolsController = require('./controllers/tools.controller');
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 8080;
+const IP = '192.168.0.52';
 
 // Middleware para parsear JSON no body das requisições
 app.use(express.json());
@@ -20,8 +21,8 @@ app.get('/tools', toolsController.listTools);
 app.use('/tool', toolRoutes);
 
 // Inicia o servidor
-app.listen(PORT, () => {
+app.listen(PORT, IP,() => {
   console.log(`\n MCP Server iniciado!`);
   console.log(` Porta: ${PORT}`);
-  console.log(` Acesse: http://localhost:${PORT}/health\n`);
+  console.log(` Acesse: http://${IP}:${PORT}/health\n`);
 });
